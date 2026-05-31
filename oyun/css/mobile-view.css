@@ -1,0 +1,131 @@
+/* ============= MOBILE VIEW OVERRIDES ============= */
+
+@media (max-width: 768px) {
+    /* ----- PLAYER HAND ----- */
+    .player-hand-wrapper {
+        width: 100vw;
+        max-width: 100vw;
+        overflow-x: auto;
+        overflow-y: visible;
+        padding-top: 20px; /* Space for hover/selected lift */
+        -webkit-overflow-scrolling: touch;
+        display: flex;
+        justify-content: center; /* Center cards if few, scroll if many */
+    }
+    
+    /* Hide scrollbar for cleaner look */
+    .player-hand-wrapper::-webkit-scrollbar {
+        display: none;
+    }
+    .player-hand-wrapper {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .player-hand {
+        padding: 0 20px;
+        gap: 0; /* Remove gap */
+    }
+
+    /* Overlap cards so they fit better */
+    .player-hand .card {
+        margin-left: -25px; 
+        box-shadow: -4px 0 8px rgba(0,0,0,0.4); /* Distinguish overlapped cards */
+        width: 64px;
+        height: 90px;
+    }
+
+    .player-hand .card:first-child {
+        margin-left: 0;
+        box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+    
+    /* When tapping/hovering a card, give it some space to be readable */
+    .player-hand .card:hover, .player-hand .card.selected {
+        margin-right: 15px; 
+        transform: translateY(-15px) scale(1.05);
+    }
+
+    /* ----- OPPONENT HANDS ----- */
+    .opponent-hand .card {
+        width: 36px;
+        height: 50px;
+    }
+
+    .seat-top .opponent-hand .card { margin-left: -15px; }
+    .seat-top .opponent-hand .card:first-child { margin-left: 0; }
+
+    .seat-left .opponent-hand .card, .seat-right .opponent-hand .card {
+        margin-top: -25px;
+    }
+    .seat-left .opponent-hand .card:first-child, .seat-right .opponent-hand .card:first-child {
+        margin-top: 0;
+    }
+
+    /* ----- GAME UI LAYOUT ----- */
+    .battlefield {
+        width: 180px;
+        height: 180px;
+    }
+
+    .battlefield-card .card {
+        width: 60px;
+        height: 84px;
+    }
+
+    .seat-left { left: 10px; }
+    .seat-right { right: 10px; }
+    .seat-top { top: 10px; }
+    
+    .player-info {
+        padding: 6px 8px;
+        gap: 6px;
+    }
+    
+    .avatar {
+        width: 30px; 
+        height: 30px; 
+        font-size: 14px;
+    }
+    
+    .score-value { font-size: 14px; }
+    
+    /* Center battlefield slightly higher to make room for bottom hand */
+    .battlefield-center {
+        top: 45%;
+    }
+    
+    .seat-bottom {
+        bottom: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Extreme overlap for very small phones */
+    .player-hand .card {
+        margin-left: -35px;
+        width: 56px;
+        height: 78px;
+    }
+    
+    .player-hand .card:hover, .player-hand .card.selected {
+        margin-right: 20px;
+    }
+
+    .battlefield {
+        width: 150px;
+        height: 150px;
+    }
+
+    .battlefield-card .card {
+        width: 50px;
+        height: 70px;
+    }
+
+    .card-emoji { font-size: 18px; }
+    .card-value { font-size: 14px; }
+    
+    .status-bar-wrapper {
+        transform: translate(-50%, -120px);
+    }
+}
