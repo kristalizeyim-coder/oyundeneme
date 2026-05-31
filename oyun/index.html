@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Echo: Elemental Chains — Elementlerin gücüyle savaştığın 4 kişilik stratejik kart oyunu.">
+    <title>Echo: Elemental Chains</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/cards.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+
+<body>
+    <div id="game-container">
+        <!-- ===== LANDING PAGE ===== -->
+        <div class="landing-overlay" id="landing-overlay">
+            <div class="landing-particles">
+                <div class="landing-particle lp-fire"></div>
+                <div class="landing-particle lp-water"></div>
+                <div class="landing-particle lp-earth"></div>
+                <div class="landing-particle lp-air"></div>
+            </div>
+            <div class="landing-content">
+                <div class="landing-element-ring">
+                    <span class="landing-element-icon le-air">🌪️</span>
+                    <span class="landing-element-icon le-fire">🔥</span>
+                    <span class="landing-element-icon le-water">💧</span>
+                    <span class="landing-element-icon le-earth">⛰️</span>
+                </div>
+                <h1 class="landing-title">ELEMENTAL<br><span class="landing-title-accent">CLASH</span></h1>
+                <p class="landing-subtitle">Elementlerin gücüyle savaş</p>
+                
+                <!-- Profile Customization -->
+                <div class="profile-setup">
+                    <input type="text" id="player-name-input" placeholder="Adınızı girin..." maxlength="12" value="Oyuncu">
+                    <div class="avatar-title">Profil Avatarı Seç</div>
+                    <div class="avatar-options" id="avatar-selector">
+                        <span class="avatar-option active" data-emoji="⚔️">⚔️</span>
+                        <span class="avatar-option" data-emoji="🧙‍♂️">🧙‍♂️</span>
+                        <span class="avatar-option" data-emoji="🧝‍♀️">🧝‍♀️</span>
+                        <span class="avatar-option" data-emoji="🐉">🐉</span>
+                        <span class="avatar-option" data-emoji="🦊">🦊</span>
+                        <span class="avatar-option" data-emoji="🐯">🐯</span>
+                        <span class="avatar-option" data-emoji="👽">👽</span>
+                        <span class="avatar-option" data-emoji="🤖">🤖</span>
+                    </div>
+                </div>
+
+                <div class="landing-btn-group">
+                    <button class="landing-play-btn" id="play-ai-btn">YAPAY ZEKAYA KARŞI</button>
+                    <button class="landing-play-btn" id="lobby-menu-btn" style="margin-top: 10px;">ÇEVRİMİÇİ MULTIPLAYER</button>
+                </div>
+                <div class="landing-hint">Kartlarını seç, rakiplerini yen</div>
+            </div>
+        </div>
+
+        <!-- ===== MULTIPLAYER ROOM LOBBY ===== -->
+        <div class="lobby-overlay" id="lobby-overlay">
+            <div class="lobby-content">
+                <h2 class="lobby-title">ÇEVRİMİÇİ MULTIPLAYER</h2>
+                
+                <div class="lobby-actions-container" id="lobby-initial-actions">
+                    <!-- Create Room -->
+                    <div class="lobby-action-box">
+                        <h3>Yeni Oda Oluştur</h3>
+                        <p>Bir oda kur ve arkadaşlarını davet et.</p>
+                        <button class="lobby-box-btn" id="create-room-btn">ODA KUR</button>
+                    </div>
+
+                    <!-- Join Room -->
+                    <div class="lobby-action-box">
+                        <h3>Bir Odaya Katıl</h3>
+                        <p>Oda kodunu girerek oyuna katıl.</p>
+                        <div class="join-input-group">
+                            <input type="text" id="room-code-input" placeholder="ODA KODU (örn: ECHO-ABCD)" maxlength="9">
+                            <button class="lobby-box-btn" id="join-room-btn">KATIL</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Room Detail Area (Active Room Lobby) -->
+                <div class="room-details-panel" id="room-lobby-panel" style="display: none;">
+                    <div class="room-header">
+                        <div class="room-code-display">
+                            Oda Kodu: <span id="lobby-room-code">ECHO-WAIT</span>
+                            <button class="copy-btn" id="copy-code-btn" title="Kodu Kopyala">Kopyala 📋</button>
+                        </div>
+                        <div class="room-status" id="room-lobby-status">Bağlantı kuruluyor...</div>
+                    </div>
+
+                    <div class="lobby-slots">
+                        <!-- Player Slots 1-4 -->
+                        <div class="lobby-slot empty" id="slot-0">
+                            <span class="slot-num">1</span>
+                            <div class="slot-info">Bekleniyor...</div>
+                        </div>
+                        <div class="lobby-slot empty" id="slot-1">
+                            <span class="slot-num">2</span>
+                            <div class="slot-info">Bekleniyor...</div>
+                        </div>
+                        <div class="lobby-slot empty" id="slot-2">
+                            <span class="slot-num">3</span>
+                            <div class="slot-info">Bekleniyor...</div>
+                        </div>
+                        <div class="lobby-slot empty" id="slot-3">
+                            <span class="slot-num">4</span>
+                            <div class="slot-info">Bekleniyor...</div>
+                        </div>
+                    </div>
+
+                    <div class="room-controls">
+                        <button class="lobby-box-btn host-only" id="add-ai-btn" style="display: none;">AI EKLE</button>
+                        <button class="lobby-box-btn host-only" id="start-game-btn" style="display: none;" disabled>OYUNU BAŞLAT</button>
+                        <button class="lobby-box-btn cancel-btn" id="leave-lobby-btn">LOBİDEN AYRIL</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Button -->
+        <button class="info-btn" id="info-btn" title="Kart Bilgileri">ⓘ</button>
+
+        <!-- ===== MAIN GAME UI (4-PLAYER) ===== -->
+        <div id="main-game-ui" style="display: none;">
+            
+            <!-- Difficulty Selector (For Offline local AI mode only) -->
+            <div class="difficulty-selector" id="game-diff-selector">
+                <button class="diff-btn" data-diff="easy" id="diff-easy">Kolay</button>
+                <button class="diff-btn active" data-diff="medium" id="diff-medium">Orta</button>
+                <button class="diff-btn" data-diff="hard" id="diff-hard">Zor</button>
+            </div>
+
+            <!-- Header Info -->
+            <div class="status-bar-wrapper">
+                <div class="round-display" id="round-display">Tur 1</div>
+                <div class="status-bar" id="status-bar">Oyun Başlıyor...</div>
+            </div>
+
+            <!-- ===== Game Table (Circular Layout) ===== -->
+            <div class="game-table">
+                
+                <!-- TOP PLAYER (Seat 3) -->
+                <div class="player-seat seat-top" id="seat-p3">
+                    <div class="player-info opponent">
+                        <div class="avatar" id="avatar-p3">🤖</div>
+                        <div class="player-details">
+                            <div class="player-name" id="name-p3">AI 2</div>
+                            <div class="player-score-display">
+                                <span class="score-value" id="score-p3">0</span>
+                                <span class="echo-count" id="echo-count-p3">Echo: 0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="opponent-hand" id="hand-p3"></div>
+                </div>
+
+                <!-- LEFT PLAYER (Seat 2) -->
+                <div class="player-seat seat-left" id="seat-p2">
+                    <div class="player-info opponent">
+                        <div class="avatar" id="avatar-p2">🤖</div>
+                        <div class="player-details">
+                            <div class="player-name" id="name-p2">AI 1</div>
+                            <div class="player-score-display">
+                                <span class="score-value" id="score-p2">0</span>
+                                <span class="echo-count" id="echo-count-p2">Echo: 0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="opponent-hand" id="hand-p2"></div>
+                </div>
+
+                <!-- CENTER BATTLEFIELD -->
+                <div class="battlefield-center">
+                    <div class="battlefield" id="battlefield">
+                        <div class="battlefield-ring"></div>
+                        <div class="battlefield-label">Savaş Alanı</div>
+                        <div class="battlefield-card-slot" id="battlefield-slot"></div>
+                    </div>
+                </div>
+
+                <!-- RIGHT PLAYER (Seat 4) -->
+                <div class="player-seat seat-right" id="seat-p4">
+                    <div class="player-info opponent">
+                        <div class="avatar" id="avatar-p4">🤖</div>
+                        <div class="player-details">
+                            <div class="player-name" id="name-p4">AI 3</div>
+                            <div class="player-score-display">
+                                <span class="score-value" id="score-p4">0</span>
+                                <span class="echo-count" id="echo-count-p4">Echo: 0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="opponent-hand" id="hand-p4"></div>
+                </div>
+
+                <!-- BOTTOM PLAYER (Seat 1 - You) -->
+                <div class="player-seat seat-bottom" id="seat-p1">
+                    <div class="player-hand-wrapper">
+                        <div class="player-hand" id="player-hand"></div>
+                    </div>
+                    <div class="player-info human">
+                        <div class="player-details">
+                            <div class="player-name" id="name-p1">Sen</div>
+                            <div class="player-score-display">
+                                <span class="score-value" id="score-p1">0</span>
+                                <span class="echo-count" id="echo-count-p1">Echo: 0</span>
+                            </div>
+                        </div>
+                        <div class="avatar" id="avatar-p1">⚔️</div>
+                    </div>
+                </div>
+
+            </div> <!-- End of game-table -->
+
+            <!-- ===== SIDE PANELS ===== -->
+            <!-- Game Log -->
+            <div class="game-log-panel" id="game-log">
+                <div class="game-log-title">Oyun Günlüğü</div>
+                <ul class="game-log-list" id="game-log-list"></ul>
+            </div>
+
+            <!-- Echo Collections (Compact panel showing everyone's Echo piles) -->
+            <div class="echo-collections-container" id="echo-collections-container">
+                <div class="echo-panel-compact" id="echo-panel-p1">
+                    <div class="echo-panel-title" id="echo-title-p1">Senin Echo</div>
+                    <div class="echo-cards" id="echo-cards-p1"></div>
+                </div>
+                <div class="echo-panel-compact" id="echo-panel-p2">
+                    <div class="echo-panel-title" id="echo-title-p2">P2 Echo</div>
+                    <div class="echo-cards" id="echo-cards-p2"></div>
+                </div>
+                <div class="echo-panel-compact" id="echo-panel-p3">
+                    <div class="echo-panel-title" id="echo-title-p3">P3 Echo</div>
+                    <div class="echo-cards" id="echo-cards-p3"></div>
+                </div>
+                <div class="echo-panel-compact" id="echo-panel-p4">
+                    <div class="echo-panel-title" id="echo-title-p4">P4 Echo</div>
+                    <div class="echo-cards" id="echo-cards-p4"></div>
+                </div>
+            </div>
+
+            <!-- Leave Game Button -->
+            <button class="leave-game-btn" id="leave-game-btn" title="Oyundan Ayrıl">🚪</button>
+
+            <!-- ===== INTERACTION OVERLAY ===== -->
+            <div class="interaction-overlay" id="interaction-overlay">
+                <div class="interaction-panel">
+                    <div class="interaction-timer-bar"><div class="timer-progress" id="inter-timer-progress"></div></div>
+                    <div class="interaction-title" id="inter-title"></div>
+                    <div class="interaction-cards" id="inter-cards"></div>
+                    <div class="interaction-desc" id="inter-desc"></div>
+                    <div class="interaction-points" id="inter-points"></div>
+                    <button class="interaction-btn" id="inter-continue-btn">Devam Et</button>
+                </div>
+            </div>
+
+            <!-- ===== GAME OVER OVERLAY ===== -->
+            <div class="game-over-overlay" id="game-over-overlay">
+                <div class="game-over-panel">
+                    <div class="game-over-title" id="go-title"></div>
+                    <div class="game-over-rankings" id="go-rankings"></div>
+                    <div class="game-over-msg" id="go-msg"></div>
+                    <div class="game-over-countdown" id="go-countdown"></div>
+                    <button class="restart-btn" id="restart-btn">Yeni Tur</button>
+                </div>
+            </div>
+
+        </div> <!-- End of MAIN GAME UI -->
+
+        <!-- ===== INFO MODAL ===== -->
+        <div class="info-overlay" id="info-overlay">
+            <div class="info-panel">
+                <button class="info-close-btn" id="info-close-btn">✕</button>
+                <h2 class="info-title">Kart Değerleri</h2>
+                <p class="info-subtitle">Her kartın puan değeri aşağıda listelenmiştir.</p>
+                <table class="info-table">
+                    <thead>
+                        <tr><th>Değer</th><th>Kart Adı</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>As</td></tr>
+                        <tr><td>2</td><td>2</td></tr>
+                        <tr><td>3</td><td>3</td></tr>
+                        <tr><td>4</td><td>4</td></tr>
+                        <tr><td>5</td><td>5</td></tr>
+                        <tr><td>6</td><td>6</td></tr>
+                        <tr><td>7</td><td>7</td></tr>
+                        <tr><td>8</td><td>8</td></tr>
+                        <tr><td>9</td><td>9</td></tr>
+                        <tr><td>10</td><td>10</td></tr>
+                        <tr><td>11</td><td>Vale</td></tr>
+                        <tr><td>12</td><td>Kız</td></tr>
+                        <tr><td>13</td><td>Şah</td></tr>
+                        <tr class="info-joker-row"><td>15</td><td>🃏 Joker</td></tr>
+                    </tbody>
+                </table>
+
+                <h3 class="info-section-title">Element Etkileşimleri</h3>
+                <div class="info-interactions">
+                    <div class="info-rule">🌪️ <strong>Hava</strong> → ⛰️ Toprağı yener</div>
+                    <div class="info-rule">🔥 <strong>Ateş</strong> → 🌪️ Havayı yener</div>
+                    <div class="info-rule">💧 <strong>Su</strong> → 🔥 Ateşi yener</div>
+                    <div class="info-rule">⛰️ <strong>Toprak</strong> → 💧 Suyu yener</div>
+                    <div class="info-rule">🃏 <strong>Joker</strong> → Her Şeyi yener (15 puan)</div>
+                </div>
+
+                <h3 class="info-section-title">Nötr Etkileşimler</h3>
+                <div class="info-interactions">
+                    <div class="info-rule info-rule-neutral">🔥 <strong>Ateş</strong> ↔ ⛰️ <strong>Toprak</strong> — Etkileşim yok, kartlar atılır</div>
+                    <div class="info-rule info-rule-neutral">💧 <strong>Su</strong> ↔ 🌪️ <strong>Hava</strong> — Etkileşim yok, kartlar atılır</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PeerJS WebRTC Library -->
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    
+    <!-- Game Scripts -->
+    <script src="js/game-engine.js"></script>
+    <script src="js/ai-opponent.js"></script>
+    <script src="js/network-manager.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/ui-controller.js"></script>
+</body>
+
+</html>
